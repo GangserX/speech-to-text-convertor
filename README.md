@@ -1,14 +1,12 @@
 # Voice Scribe
 
-A real-time speech-to-text transcription app powered by Groq's Whisper models. Record audio from your microphone and get instant transcriptions — right in the browser.
+A real-time speech-to-text transcription app powered by Groq's Whisper model. Record audio from your microphone and get instant transcriptions — right in the browser.
 
 Built with **Angular 21** and **Tailwind CSS**. No backend required.
 
 ## Features
 
-- **Two transcription modes:**
-  - **Turbo** — Uses `whisper-large-v3-turbo` for fast, near-instant transcription
-  - **Complex** — Uses `whisper-large-v3` for higher accuracy on longer speech
+- **High-accuracy transcription** — Uses `whisper-large-v3` for reliable speech-to-text
 - **One-tap recording** — Click to record, click to stop and transcribe
 - **Copy to clipboard** — Quickly copy the transcript text
 - **Responsive UI** — Clean, modern design with Tailwind CSS
@@ -18,7 +16,7 @@ Built with **Angular 21** and **Tailwind CSS**. No backend required.
 
 - Angular 21 (standalone components, signals)
 - Tailwind CSS 4
-- Groq API (Whisper Large V3 / V3 Turbo)
+- Groq API (Whisper Large V3)
 
 ## Run Locally
 
@@ -35,9 +33,8 @@ Built with **Angular 21** and **Tailwind CSS**. No backend required.
    npm install --legacy-peer-deps
    ```
 
-3. Set your Groq API keys in `.env.local`:
+3. Set your Groq API key in `.env.local`:
    ```
-   GROQ_API_KEY_TURBO=your_turbo_key_here
    GROQ_API_KEY_COMPLEX=your_complex_key_here
    ```
 

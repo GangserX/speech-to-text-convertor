@@ -13,33 +13,6 @@ import { GroqService } from './services/groq.service';
       <header class="mb-8 text-center">
         <h1 class="text-3xl font-bold text-slate-800 mb-2">Voice Scribe</h1>
         <p class="text-slate-500">Record your voice and get an instant transcription.</p>
-        
-        <!-- Mode Switch -->
-        <div class="mt-4 inline-flex rounded-lg bg-slate-200 p-1">
-          <button 
-            (click)="groqService.setMode('turbo')"
-            [class]="groqService.mode() === 'turbo' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
-            class="px-4 py-2 text-sm font-semibold rounded-md transition-all duration-200"
-            [disabled]="audioRecorder.isRecording() || isProcessing()"
-          >
-            ⚡ Turbo
-          </button>
-          <button 
-            (click)="groqService.setMode('complex')"
-            [class]="groqService.mode() === 'complex' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
-            class="px-4 py-2 text-sm font-semibold rounded-md transition-all duration-200"
-            [disabled]="audioRecorder.isRecording() || isProcessing()"
-          >
-            🧠 Complex
-          </button>
-        </div>
-        <p class="mt-2 text-xs text-slate-400">
-          @if (groqService.mode() === 'turbo') {
-            Fast transcription — best for short clips
-          } @else {
-            Accurate transcription — best for longer speech
-          }
-        </p>
       </header>
     
       <main class="w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">

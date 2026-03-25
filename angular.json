@@ -22,7 +22,6 @@
               "src/styles.css"
             ],
             "define": {
-              "GROQ_API_KEY_TURBO": "GROQ_API_KEY_TURBO_PLACEHOLDER",
               "GROQ_API_KEY_COMPLEX": "GROQ_API_KEY_COMPLEX_PLACEHOLDER"
             }
           },
