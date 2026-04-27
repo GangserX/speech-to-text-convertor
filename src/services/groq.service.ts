@@ -21,6 +21,10 @@ export class GroqService {
       formData.append('model', this.modelName);
       formData.append('temperature', '0');
       formData.append('response_format', 'verbose_json');
+      // Explicitly set English to prevent noise-induced language misdetection
+      formData.append('language', 'en');
+      // Prompt gives Whisper context to expect natural English speech
+      formData.append('prompt', 'The following is a clear English speech transcription.');
 
       const response = await fetch(this.apiUrl, {
         method: 'POST',
