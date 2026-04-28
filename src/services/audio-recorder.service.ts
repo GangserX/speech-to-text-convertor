@@ -1,5 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { AudioProcessorService } from './audio-processor.service';
+import { Injectable, signal } from '@angular/core';
 
 export interface RecordedAudio {
   blob: Blob;
@@ -11,40 +10,17 @@ export interface RecordedAudio {
   providedIn: 'root'
 })
 export class AudioRecorderService {
-  private audioProcessor = inject(AudioProcessorService);
-
   private mediaRecorder: MediaRecorder | null = null;
   private chunks: Blob[] = [];
-  private rawStream: MediaStream | null = null;
-  private processorCleanup: (() => void) | null = null;
   
   isRecording = signal(false);
   recordingTime = signal(0);
   private timerInterval: any = null;
 
-  /** Expose the calibration state from AudioProcessorService */
-  isCalibrating = this.audioProcessor.isCalibrating;
-
   async startRecording(): Promise<void> {
     try {
-      // --- Layer 1: Browser-native noise suppression constraints ---
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,       // Remove echo/feedback loops
-          noiseSuppression: true,       // Browser-level noise suppression
-          autoGainControl: true,        // Normalize microphone volume
-          channelCount: 1,              // Mono audio (optimal for speech)
-        }
-      });
-
-      this.rawStream = stream;
-
-      // --- Layer 2: Web Audio API processing pipeline ---
-      // Pipes audio through: HighPass → LowPass → Compressor → NoiseGate
-      const { cleanStream, cleanup } = await this.audioProcessor.processStream(stream);
-      this.processorCleanup = cleanup;
-
-      // Prefer standard MIME types that Groq/Whisper supports
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Prefer standard MIME types that Gemini supports
       let mimeType = 'audio/webm';
       if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
         mimeType = 'audio/webm;codecs=opus';
@@ -52,8 +28,7 @@ export class AudioRecorderService {
         mimeType = 'audio/mp4';
       }
 
-      // Record the CLEANED stream (not the raw microphone stream)
-      this.mediaRecorder = new MediaRecorder(cleanStream, { mimeType });
+      this.mediaRecorder = new MediaRecorder(stream, { mimeType });
       this.chunks = [];
 
       this.mediaRecorder.ondataavailable = (e) => {
@@ -83,15 +58,8 @@ export class AudioRecorderService {
         this.stopTimer();
         const blob = new Blob(this.chunks, { type: this.mediaRecorder?.mimeType || 'audio/webm' });
         
-        // Stop all tracks on the RAW stream to release microphone
-        this.rawStream?.getTracks().forEach(track => track.stop());
-        this.rawStream = null;
-
-        // Tear down the audio processing pipeline
-        if (this.processorCleanup) {
-          this.processorCleanup();
-          this.processorCleanup = null;
-        }
+        // Stop all tracks to release microphone
+        this.mediaRecorder?.stream.getTracks().forEach(track => track.stop());
 
         this.mediaRecorder = null;
         this.isRecording.set(false);

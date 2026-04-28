@@ -22,14 +22,7 @@ import { GroqService } from './services/groq.service';
           
           <!-- Status Area -->
           <div class="mb-8 h-8 flex items-center justify-center">
-            @if (audioRecorder.isCalibrating()) {
-              <span class="text-amber-600 font-medium animate-pulse flex items-center gap-2">
-                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
-                </svg>
-                Calibrating noise floor...
-              </span>
-            } @else if (isProcessing()) {
+            @if (isProcessing()) {
               <span class="text-indigo-600 font-medium animate-pulse flex items-center gap-2">
                 <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -43,17 +36,6 @@ import { GroqService } from './services/groq.service';
               <span class="text-slate-400">Ready to record</span>
             }
           </div>
-
-          <!-- Noise Cancellation Badge -->
-          @if (audioRecorder.isRecording() && !audioRecorder.isCalibrating()) {
-            <div class="mb-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200">
-              <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span class="text-xs font-medium text-emerald-700">Noise cancellation active</span>
-            </div>
-          }
     
           <!-- Record Button Container -->
           <div class="relative">
@@ -65,7 +47,7 @@ import { GroqService } from './services/groq.service';
             <!-- Main Button -->
             <button 
               (click)="toggleRecording()"
-              [disabled]="isProcessing() || audioRecorder.isCalibrating()"
+              [disabled]="isProcessing()"
               [class]="audioRecorder.isRecording() ? 'bg-red-500 hover:bg-red-600' : 'bg-indigo-600 hover:bg-indigo-700'"
               class="relative z-10 w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
               [class.focus:ring-red-500]="audioRecorder.isRecording()"
@@ -91,9 +73,7 @@ import { GroqService } from './services/groq.service';
           </div>
     
           <p class="mt-2 text-sm text-slate-400">
-            @if (audioRecorder.isCalibrating()) {
-              Stay quiet — calibrating ambient noise...
-            } @else if (audioRecorder.isRecording()) {
+            @if (audioRecorder.isRecording()) {
               Tap to stop and transcribe
             } @else {
               Tap microphone to start
